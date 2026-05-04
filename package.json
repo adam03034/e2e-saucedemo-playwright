@@ -1,0 +1,16 @@
+{
+  "name": "playwright-cart-tests",
+  "version": "1.0.0",
+  "description": "E2E tests for add-to-cart flow using Playwright & TypeScript",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report",
+    "lint": "eslint . --ext .ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.43.0",
+    "@types/node": "^20.12.7",
+    "typescript": "^5.4.5"
+  }
+}

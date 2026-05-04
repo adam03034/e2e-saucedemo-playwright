@@ -1,0 +1,17 @@
+node_modules/
+dist/
+playwright-report/
+test-results/
+.playwright/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

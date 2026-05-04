@@ -1,0 +1,76 @@
+name: Playwright E2E Tests
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master]
+  # Allow manual runs from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Playwright Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      # Run each browser in parallel as a separate job
+      matrix:
+        browser: [chromium, firefox]
+      fail-fast: false
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Setup Node.js ─────────────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # ── 3. Install dependencies ───────────────────────────────────────────
+      - name: Install dependencies
+        run: npm ci
+
+      # ── 4. Install Playwright browsers ───────────────────────────────────
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      # ── 5. Run tests ──────────────────────────────────────────────────────
+      - name: Run Playwright tests (${{ matrix.browser }})
+        run: npx playwright test --project=${{ matrix.browser }}
+        env:
+          CI: true
+          LOG_LEVEL: INFO
+
+      # ── 6. Upload HTML report as artifact ─────────────────────────────────
+      - name: Upload Playwright HTML Report
+        uses: actions/upload-artifact@v4
+        if: always() # Upload even on failure
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: playwright-report/
+          retention-days: 14
+
+      # ── 7. Upload JUnit XML for test summary ─────────────────────────────
+      - name: Upload JUnit Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: junit-results-${{ matrix.browser }}
+          path: test-results/junit-results.xml
+          retention-days: 14
+
+      # ── 8. Publish test summary to PR / commit ────────────────────────────
+      - name: Publish Test Summary
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: "Playwright Tests – ${{ matrix.browser }}"
+          path: test-results/junit-results.xml
+          reporter: java-junit
+          fail-on-error: false
