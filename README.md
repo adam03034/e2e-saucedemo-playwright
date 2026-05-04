@@ -1,29 +1,4 @@
 
-## 🚀 Ako začať
-
-```bash
-# 1. Clone the repo
-git clone <repository-url>
-cd playwright-cart-tests
-
-# 2. Install dependencies
-npm ci
-
-# 3. Install Playwright browsers
-npx playwright install --with-deps
-
-# 4. Run all tests (headless)
-npm test
-
-# 5. Run tests with browser UI visible
-npm run test:headed
-
-# 6. Open the HTML report
-npm run test:report
-```
-
----
-
 # e2e-saucedemo-playwright
 
 Automatizované testy pre pridanie produktu do košíka na [saucedemo.com](https://www.saucedemo.com). Napísané v Playwright a TypeScript.
@@ -49,6 +24,12 @@ utils/          - logger
 npm install
 npx playwright install --with-deps
 npm test
+
+Run tests with browser UI visible
+npm run test:headed
+
+Open the HTML report
+npm run test:report
 ```
 
 ## Testovacie prípady
